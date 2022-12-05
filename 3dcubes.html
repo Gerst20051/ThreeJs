@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>3D Cubes</title>
+<style>body { margin: 0; }</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+const scene = createScene();
+const camera = createCamera();
+const renderer = createRenderer();
+const geometry = createCubeGeometry();
+const cubes = createCubes(geometry);
+const light = createLight();
+
+cubes.forEach(cube => scene.add(cube));
+scene.add(light);
+
+function createScene() {
+  const scene = new THREE.Scene();
+  return scene;
+}
+
+function createCamera() {
+  const fov = 75;
+  const camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 1000);
+  updateCameraPosition(camera);
+  return camera;
+}
+
+function createRenderer() {
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+  return renderer;
+}
+
+function createCubeGeometry() {
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  return geometry;
+}
+
+function createCubes(geometry) {
+  return [
+    createCube(geometry, 0x44aa88,  0),
+    createCube(geometry, 0x8844aa, -2),
+    createCube(geometry, 0xaa8844,  2),
+  ];
+}
+
+function createCube(geometry, color, x) {
+  const material = new THREE.MeshPhongMaterial({ color });
+  const cube = new THREE.Mesh(geometry, material);
+  updateCubePosition(cube, x);
+  return cube;
+}
+
+function createLight() {
+  const color = 0xffffff;
+  const intensity = 1;
+  const light = new THREE.DirectionalLight(color, intensity);
+  updateLightPosition(light);
+  return light;
+}
+
+function updateCubeRotation(cube, x, y) {
+  cube.rotation.x = x;
+  cube.rotation.y = y;
+}
+
+function updateCameraPosition(camera) {
+  camera.position.z = 5;
+}
+
+function updateCubePosition(cube, x) {
+  cube.position.x = x;
+}
+
+function updateLightPosition(light) {
+  light.position.set(-1, 2, 4);
+}
+
+function rotateCubes(cubes, time) {
+  time *= 0.001; // convert time to seconds
+
+  cubes.forEach((cube, index) => {
+    const speed = 1 + index * .1;
+    const rot = time * speed;
+    updateCubeRotation(cube, rot, rot);
+  });
+}
+
+function animate(time) {
+  requestAnimationFrame(animate);
+  rotateCubes(cubes, time);
+  renderer.render(scene, camera);
+}
+
+animate();
+</script>
+</body>
+</html>
