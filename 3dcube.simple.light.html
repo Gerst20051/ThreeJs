@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>3D Cube Simple Light</title>
+<style>body { margin: 0; }</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+const scene = createScene();
+const camera = createCamera();
+const renderer = createRenderer();
+const cube = createCube();
+const light = createLight();
+
+scene.add(cube);
+scene.add(light);
+
+function createScene() {
+  const scene = new THREE.Scene();
+  return scene;
+}
+
+function createCamera() {
+  const fov = 75;
+  const camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 1000);
+  updateCameraPosition(camera);
+  return camera;
+}
+
+function createRenderer() {
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+  return renderer;
+}
+
+function createCube() {
+  const color = 0x44aa88;
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshPhongMaterial({ color });
+  const cube = new THREE.Mesh(geometry, material);
+  return cube;
+}
+
+function createLight() {
+  const color = 0xffffff;
+  const intensity = 1;
+  const light = new THREE.DirectionalLight(color, intensity);
+  updateLightPosition(light);
+  return light;
+}
+
+function updateCubeRotation(cube) {
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+}
+
+function updateCameraPosition(camera) {
+  camera.position.z = 5;
+}
+
+function updateLightPosition(light) {
+  light.position.set(-1, 2, 4);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  updateCubeRotation(cube);
+  renderer.render(scene, camera);
+}
+
+animate();
+</script>
+</body>
+</html>
